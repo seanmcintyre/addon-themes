@@ -1,0 +1,10 @@
+
+node_modules
+npm-debug.log
+yarn-error.log
+.DS_STORE
+.DS_Store
+.vscode
+.cache
+dist
+.gh-pages/*
