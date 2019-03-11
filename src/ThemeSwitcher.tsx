@@ -6,58 +6,65 @@ import {
   TooltipLinkList,
   // @ts-ignore
 } from '@storybook/components';
+import { theme, bindThemeOverride, setTheme } from './themeStore';
+import { themes, SharedTheme } from './themes';
 import styled from 'styled-components';
-import {
-  getLocalTheme,
-  bindThemeOverride,
-  setLocalTheme,
-} from './themeStore';
 
 export const ThemeSwitcher = ({ api }: any) => {
-  const [activeTheme, setTheme] = useState(getLocalTheme()[0]);
+  const [t, setT] = useState(theme()); // render hack
   const [expanded, setExpanded] = useState(false);
+  useEffect(() => bindThemeOverride(api), [api]);
 
-  useEffect(() => bindThemeOverride(api), []);
-
-  const themes: any = JSON.parse(
-    window.localStorage.getItem('iris-sb-themes') || '',
-  );
-
-  const themeList =
-    themes &&
-    themes.map((i: any) => ({
-      id: i,
-      title: i,
-      onClick: () => {
-        setTheme(i);
-        setLocalTheme({ api, theme: i, rerender: true });
-      },
-      right: <ThemeIcon />,
-    }));
-
-  return themes ? (
+  return (
     <WithTooltip
       placement="top"
       trigger="click"
       tooltipShown={expanded}
+      closeOnClick
       onVisibilityChange={(expanded: boolean) =>
         setExpanded(expanded)
       }
-      tooltip={<TooltipLinkList links={themeList} />}
-      closeOnClick
+      tooltip={
+        <TooltipLinkList
+          links={themes.map((theme: SharedTheme) => ({
+            id: theme.name,
+            title: theme.name,
+            right: (
+              <Icon
+                theme={t.name}
+                dangerouslySetInnerHTML={{ __html: theme.icon }}
+              />
+            ),
+            onClick: () => {
+              setT(theme);
+              setTheme({ api, newTheme: theme, rerender: true });
+              setExpanded(expanded);
+            },
+          }))}
+        />
+      }
     >
-      <IconButton key="theme-switcher">{activeTheme}</IconButton>
+      <IconButton key="theme-switcher">
+        <Icon
+          theme={t.name}
+          dangerouslySetInnerHTML={{ __html: theme().icon }}
+        />
+      </IconButton>
     </WithTooltip>
-  ) : (
-    <></>
   );
 };
 
-const ThemeIcon = styled.span`
+const Icon = styled.span`
   height: 1rem;
   width: 1rem;
   display: block;
-  background: red;
+
+  svg {
+    stroke: ${props =>
+      props.theme === 'light' ? '#000' : '#FFF'} !important;
+    fill: ${props =>
+      props.theme === 'light' ? '#000' : '#FFF'} !important;
+  }
 `;
 
 // CHANNEL_CREATED = "channelCreated",

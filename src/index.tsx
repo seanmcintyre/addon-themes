@@ -5,7 +5,7 @@ import {
   StoryGetter,
 } from '@storybook/addons';
 import { ThemeProvider } from 'styled-components';
-import { getLocalTheme } from './themeStore';
+import { theme } from './themeStore';
 
 export const withThemes = makeDecorator({
   name: 'themes',
@@ -13,15 +13,8 @@ export const withThemes = makeDecorator({
   skipIfNoParametersOrOptions: false,
   allowDeprecatedUsage: false,
   wrapper: (getStory: StoryGetter, context: StoryContext) => (
-    <ThemeProvider theme={getLocalTheme()[1]}>
-      {getStory(context)}
-    </ThemeProvider>
+    <ThemeProvider theme={theme()}>{getStory(context)}</ThemeProvider>
   ),
 });
 
-export const addThemes = (themes: string[]) => {
-  window.localStorage.setItem(
-    'iris-sb-themes',
-    JSON.stringify(themes),
-  );
-};
+export { addThemes } from './themeStore';
