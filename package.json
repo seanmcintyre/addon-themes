@@ -1,6 +1,6 @@
 {
   "name": "sb-addon-themes",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
