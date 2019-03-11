@@ -1,5 +1,5 @@
 {
-  "name": "addon-themes",
+  "name": "sb-addon-themes",
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
