@@ -61,9 +61,13 @@ const Icon = styled.span`
 
   svg {
     stroke: ${props =>
-      props.theme === 'light' ? '#000' : '#FFF'} !important;
+      props.theme === 'light'
+        ? 'rgba(0,0,0,0.75)'
+        : 'rgba(255,255,255,0.9)'} !important;
     fill: ${props =>
-      props.theme === 'light' ? '#000' : '#FFF'} !important;
+      props.theme === 'light'
+        ? 'rgba(0,0,0,0.75)'
+        : 'rgba(255,255,255,0.9)'} !important;
   }
 `;
 

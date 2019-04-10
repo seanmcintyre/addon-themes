@@ -59,7 +59,7 @@ export const theme = ({ themes, current }: any = store()) =>
   themes[current];
 
 export const addThemes = (themes: string[]) => {
-  console.log('Registering themes: ', themes);
+  // console.log('Registering themes: ', themes);
   // update({
   //   ...store(),
   //   themes: {},
