@@ -7,7 +7,7 @@ import {
   // @ts-ignore
 } from '@storybook/components';
 import { theme, bindThemeOverride, setTheme } from './themeStore';
-import { themes, SharedTheme } from './themes';
+import { themes, SharedTheme, defaultThemes } from './themes';
 import styled from 'styled-components';
 
 export const ThemeSwitcher = ({ api }: any) => {
@@ -55,8 +55,8 @@ export const ThemeSwitcher = ({ api }: any) => {
 };
 
 const Icon = styled.span`
-  height: 1rem;
-  width: 1rem;
+  height: 2rem;
+  width: 2rem;
   display: block;
 
   svg {
@@ -68,6 +68,7 @@ const Icon = styled.span`
       props.theme === 'light'
         ? 'rgba(0,0,0,0.75)'
         : 'rgba(255,255,255,0.9)'} !important;
+    stroke-width: 0.25rem;
   }
 `;
 

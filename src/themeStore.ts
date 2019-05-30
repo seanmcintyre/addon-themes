@@ -55,13 +55,19 @@ export function setTheme({
   }
 }
 
+export function themeName() {
+  return store().current;
+}
+
 export const theme = ({ themes, current }: any = store()) =>
   themes[current];
 
-export const addThemes = (themes: string[]) => {
-  // console.log('Registering themes: ', themes);
-  // update({
-  //   ...store(),
-  //   themes: {},
-  // });
+export const addThemes = (themes: any = {}) => {
+  console.log('Registering themes: ', themes);
+  themes.light.icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="m7,25a18,18 0 1,1 0,.1zm3,0a15,15 0 1,0 0-.1zm11,0a4,4 0 1,0 0-.1z" /></svg>`;
+  themes.dark.icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path style="stroke-width: 3; stroke-color: red;" fill="none" strokeLinejoin="round" d="M37,4a22,22 0 1,0 0,42a22,22 0 0,1 0-42z" /></svg>`;
+  update({
+    ...store(),
+    themes,
+  });
 };
