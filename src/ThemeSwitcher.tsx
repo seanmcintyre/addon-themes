@@ -68,8 +68,8 @@ export const ThemeSwitcher = ({ api }: any) => {
 };
 
 const Icon = styled.span`
-  height: 1rem;
-  width: 1rem;
+  height: 2rem;
+  width: 2rem;
   display: block;
 
   svg {
