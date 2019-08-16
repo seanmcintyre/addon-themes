@@ -1,19 +1,26 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import styled from 'styled-components';
+import { themes as sbThemes } from '@storybook/theming';
+import addons from '@storybook/addons';
+import { FORCE_RE_RENDER } from '@storybook/core-events';
 import {
   IconButton,
   WithTooltip,
   TooltipLinkList,
   // @ts-ignore
 } from '@storybook/components';
-import { theme, bindThemeOverride, setTheme } from './themeStore';
-import { themes, SharedTheme, defaultThemes } from './themes';
-import styled from 'styled-components';
 
 export const ThemeSwitcher = ({ api }: any) => {
-  const [t, setT] = useState(theme()); // render hack
   const [expanded, setExpanded] = useState(false);
   useEffect(() => bindThemeOverride(api), [api]);
+
+  const currentTheme = getCurrentTheme();
+  const themesObj = getThemes();
+  const themeNames = Object.keys(themesObj);
+  const themes = themeNames
+    .map(name => themesObj[name])
+    .filter(theme => typeof theme === 'object');
 
   return (
     <WithTooltip
@@ -26,18 +33,22 @@ export const ThemeSwitcher = ({ api }: any) => {
       }
       tooltip={
         <TooltipLinkList
-          links={themes.map((theme: SharedTheme) => ({
+          links={themes.map((theme: any, i: number) => ({
             id: theme.name,
             title: theme.name,
             right: (
               <Icon
-                theme={t.name}
+                key={i}
+                theme={theme.name}
                 dangerouslySetInnerHTML={{ __html: theme.icon }}
               />
             ),
             onClick: () => {
-              setT(theme);
-              setTheme({ api, newTheme: theme, rerender: true });
+              setTheme({
+                api,
+                newTheme: theme.name,
+                rerender: true,
+              });
               setExpanded(expanded);
             },
           }))}
@@ -46,8 +57,10 @@ export const ThemeSwitcher = ({ api }: any) => {
     >
       <IconButton key="theme-switcher">
         <Icon
-          theme={t.name}
-          dangerouslySetInnerHTML={{ __html: theme().icon }}
+          theme={currentTheme.name}
+          dangerouslySetInnerHTML={{
+            __html: currentTheme.icon,
+          }}
         />
       </IconButton>
     </WithTooltip>
@@ -72,22 +85,58 @@ const Icon = styled.span`
   }
 `;
 
-// CHANNEL_CREATED = "channelCreated",
-// GET_CURRENT_STORY = "getCurrentStory",
-// SET_CURRENT_STORY = "setCurrentStory",
-// GET_STORIES = "getStories",
-// SET_STORIES = "setStories",
-// STORIES_CONFIGURED = "storiesConfigured",
-// SELECT_STORY = "selectStory",
-// PREVIEW_KEYDOWN = "previewKeydown",
-// STORY_ADDED = "storyAdded",
-// STORY_CHANGED = "storyChanged",
-// STORY_UNCHANGED = "storyUnchanged",
-// FORCE_RE_RENDER = "forceReRender",
-// REGISTER_SUBSCRIPTION = "registerSubscription",
-// STORY_INIT = "storyInit",
-// STORY_RENDER = "storyRender",
-// STORY_RENDERED = "storyRendered",
-// STORY_MISSING = "storyMissing",
-// STORY_ERRORED = "storyErrored",
-// STORY_THREW_EXCEPTION = "storyThrewException"
+export function bindThemeOverride(api: any) {
+  const channel = api.getChannel();
+
+  channel.on('storiesConfigured', () => {
+    setTheme({ api });
+  });
+
+  channel.on('storyChanged', () => {
+    setTheme({ api });
+  });
+}
+
+export function getCurrentTheme() {
+  const theme =
+    window.localStorage.getItem('sb-addon-theme') || 'light';
+  return getThemes()[theme];
+}
+
+export function getThemes() {
+  return (
+    JSON.parse(window.localStorage.getItem(
+      'sb-addon-themes',
+    ) as string) || defaultThemes
+  );
+}
+
+export function setTheme({ api, newTheme, rerender = false }: any) {
+  if (newTheme) {
+    window.localStorage.setItem('sb-addon-theme', newTheme);
+  }
+  api.setOptions({ theme: getCurrentTheme() });
+
+  if (rerender) {
+    addons.getChannel().emit(FORCE_RE_RENDER);
+  }
+}
+
+export function addThemes(themes: any) {
+  console.log('Registering themes: ', themes);
+  window.localStorage.setItem(
+    'sb-addon-themes',
+    JSON.stringify(themes),
+  );
+}
+
+const defaultThemes = {
+  light: {
+    name: 'light',
+    ...sbThemes.light,
+  },
+  dark: {
+    name: 'dark',
+    ...sbThemes.dark,
+  },
+};
