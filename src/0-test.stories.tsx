@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 
-export default {
-  title: 'Test',
-};
+export default { title: 'Test' };
 
 export const theme = () => <ThemeJSON />;
 

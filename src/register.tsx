@@ -1,48 +1,75 @@
-import React from 'react';
-import styled from 'styled-components';
-
-import { themes } from '@storybook/theming';
+import React, { useEffect } from 'react';
+import styled, { ThemeProvider } from 'styled-components';
 import addons, { types } from '@storybook/addons';
 
+import { readThemes } from './themes';
 import { useLocalStorage } from './useLocalStorage';
+
+const { TOOL } = types;
 
 addons.register('nox/addon-themes', api =>
   addons.add('nox/addon-themes', {
     title: 'nox/addon-themes',
-    type: types.TOOL,
+    type: TOOL,
     match: ({ viewMode }) => viewMode === 'story',
     render: () => <ThemeToggle api={api}>nox</ThemeToggle>,
   }),
 );
 
 function ThemeToggle({ api, ...props }: any) {
-  const [state, setState] = useLocalStorage();
-  const next = state === 'light' ? 'dark' : 'light';
+  const [local, setLocal] = useLocalStorage();
+  const name = local === 'light' ? 'dark' : 'light';
+
+  const { setOptions } = api;
+  const themes = readThemes();
+  const theme = themes[name];
+  const current = themes[local];
+
+  const { icon } = current;
+  const HTML = { __html: icon };
 
   function doClick() {
-    setState(next);
-    api.setOptions({ theme: themes[next] });
+    setOptions({ theme });
+    setLocal(name);
   }
 
-  return (
-    <Styled onClick={doClick} {...props}>
-      {state}
-    </Styled>
+  useEffect(() => {
+    if (!icon) setTimeout(() => setLocal(local), 1000);
+  }, []);
+
+  return icon ? (
+    <ThemeProvider theme={current}>
+      <Styled onClick={doClick} {...props}>
+        {icon ? <IconStyled dangerouslySetInnerHTML={HTML} /> : local}
+      </Styled>
+    </ThemeProvider>
+  ) : (
+    <Styled>loading themes...</Styled>
   );
 }
+
+const IconStyled = styled.div`
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    opacity: 0.75;
+
+    * {
+      fill: ${({ theme }) => theme.textColor};
+    }
+  }
+`;
 
 const Styled = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
   user-select: none;
-
   color: ${({ theme }) => theme.textColor};
   font-size: 0.667rem;
   font-weight: 800;
-  letter-spacing: 0.1rem;
   line-height: 0.667rem;
+  letter-spacing: 0.1rem;
   text-transform: uppercase;
 `;

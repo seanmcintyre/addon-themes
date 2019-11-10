@@ -2,21 +2,20 @@ import addons from '@storybook/addons';
 import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { useState } from 'react';
 
-export function useLocalStorage(): [
-  string,
-  (payload: string) => void,
-] {
+type useLocalStorage = [string, (payload: string) => void];
+const { getChannel } = addons;
+
+export function useLocalStorage(): useLocalStorage {
   const [_, renderHack] = useState();
+  const local = localStorage.getItem('nox-addon-theme') || 'light';
 
-  const localState =
-    (window.localStorage.getItem('nox-addon-theme') as string) ||
-    'light';
-
-  const setLocalStorage = (payload: string) => {
-    renderHack(payload);
-    addons.getChannel().emit(FORCE_RE_RENDER);
-    window.localStorage.setItem('nox-addon-theme', payload);
+  const setLocal = (payload: string) => {
+    const aaa = payload + `${Math.random()}`.substring(5, 10);
+    console.log('setLocal', { aaa });
+    renderHack(aaa);
+    getChannel().emit(FORCE_RE_RENDER);
+    localStorage.setItem('nox-addon-theme', payload);
   };
 
-  return [localState, setLocalStorage];
+  return [local, setLocal];
 }
