@@ -10,9 +10,8 @@ export function useLocalStorage(): useLocalStorage {
   const local = localStorage.getItem('nox-addon-theme') || 'light';
 
   const setLocal = (payload: string) => {
-    const aaa = payload + `${Math.random()}`.substring(5, 10);
-    console.log('setLocal', { aaa });
-    renderHack(aaa);
+    const forceUpdate = payload + `${Math.random()}`.substring(5, 10);
+    renderHack(forceUpdate);
     getChannel().emit(FORCE_RE_RENDER);
     localStorage.setItem('nox-addon-theme', payload);
   };

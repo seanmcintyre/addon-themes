@@ -1,6 +1,6 @@
 {
   "name": "@nox/addon-themes",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -45,6 +45,9 @@
     "typescript": "^3.7.2"
   },
   "peerDependencies": {
+    "@storybook/react": ">=5.1.0",
+    "react-dom": ">=16.10.0",
+    "react": ">=16.10.0",
     "styled-components": ">=4.3.0"
   }
 }
