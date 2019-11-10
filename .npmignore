@@ -1,9 +1,12 @@
+.babelrc
 .github
 .gitignore
 .prettierrc
+.storybook
 modules
 scripts
 src
+tsconfig.json
 yarn.lock
 
 node_modules

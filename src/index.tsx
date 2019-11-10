@@ -1,23 +1,17 @@
 import React from 'react';
-import {
-  makeDecorator,
-  StoryContext,
-  StoryGetter,
-} from '@storybook/addons';
 import { ThemeProvider } from 'styled-components';
-import { getCurrentTheme } from './ThemeSwitcher';
+
+import { themes } from '@storybook/theming';
+import { makeDecorator } from '@storybook/addons';
+
+import { useLocalStorage } from './useLocalStorage';
 
 export const withThemes = makeDecorator({
-  name: 'themes',
+  name: 'withThemes',
   parameterName: 'themes',
-  skipIfNoParametersOrOptions: false,
-  allowDeprecatedUsage: false,
-  wrapper: (getStory: StoryGetter, context: StoryContext) => {
-    const theme = getCurrentTheme();
-    return (
-      <ThemeProvider theme={theme}>{getStory(context)}</ThemeProvider>
-    );
-  },
+  wrapper: (storyFn, context) => (
+    <ThemeProvider theme={themes[useLocalStorage()[0]]}>
+      {storyFn(context)}
+    </ThemeProvider>
+  ),
 });
-
-export { addThemes } from './ThemeSwitcher';

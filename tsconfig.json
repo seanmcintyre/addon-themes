@@ -10,7 +10,7 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "lib": ["es2017", "esnext", "dom"],
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "outDir": "dist",
     "rootDir": "./src",
@@ -20,6 +20,12 @@
     "types": ["node", "webpack-env"],
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "src/0-test.stories.tsx"
   ],
+  "exclude": [
+    "node_modules",
+    ".storybook",
+    "stories",
+    "src/**/*.stories.tsx"
+  ]
 }
