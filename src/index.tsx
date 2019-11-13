@@ -8,14 +8,13 @@ import { useLocalStorage } from './useLocalStorage';
 export const withThemes = makeDecorator({
   name: 'withThemes',
   parameterName: 'themes',
-  wrapper: (storyFn, context) => {
-    const [name] = useLocalStorage();
-    const theme = readThemes()[name];
-
-    return (
-      <ThemeProvider theme={theme}>{storyFn(context)}</ThemeProvider>
-    );
-  },
+  wrapper: (story, ctx) => <ThemedStory>{story(ctx)}</ThemedStory>,
 });
 
 export { addThemes } from './themes';
+
+function ThemedStory(props: any) {
+  const [name] = useLocalStorage();
+  const theme = readThemes()[name];
+  return <ThemeProvider theme={theme} {...props} />;
+}
